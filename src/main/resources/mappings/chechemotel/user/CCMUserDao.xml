@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.user.dao.CCMUserDao">
+    
+	<sql id="cCMUserColumns">
+		a.id AS "id",
+		a.user_code AS "userCode",
+		a.account_name AS "accountName",
+		a.phone AS "phone",
+		a.real_name AS "realName",
+		a.money AS "money",
+		a.qr_code AS "qrCode",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.card AS "card",
+		a.jifen AS "jifen",
+		a.zje AS "zje",
+		a.sex AS "sex",
+		a.head_img AS "headImg",
+		a.red_beg_zje AS "redBegZje",
+		a.can_tx_zje AS "canTxZje",
+		a.reg_bag_count AS "regBagCount",
+		a.status AS "status",
+		a.tjm AS "tjm"
+	</sql>
+	
+	<sql id="cCMUserJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMUser">
+		SELECT 
+			<include refid="cCMUserColumns"/>
+		FROM ccm_user a
+		<include refid="cCMUserJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMUser">
+		SELECT 
+			<include refid="cCMUserColumns"/>
+		FROM ccm_user a
+		<include refid="cCMUserJoins"/>
+		<where>
+			
+			<if test="userCode != null and userCode != ''">
+				AND a.user_code = #{userCode}
+			</if>
+			<if test="accountName != null and accountName != ''">
+				AND a.account_name = #{accountName}
+			</if>
+			<if test="phone != null and phone != ''">
+				AND a.phone = #{phone}
+			</if>
+			<if test="realName != null and realName != ''">
+				AND a.real_name = #{realName}
+			</if>
+			<if test="tjm != null and tjm != ''">
+				AND a.tjm = #{tjm}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMUser">
+		SELECT 
+			<include refid="cCMUserColumns"/>
+		FROM ccm_user a
+		<include refid="cCMUserJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_user(
+			id,
+			user_code,
+			account_name,
+			phone,
+			real_name,
+			money,
+			qr_code,
+			create_time,
+			update_time,
+			card,
+			jifen,
+			zje,
+			sex,
+			head_img,
+			red_beg_zje,
+			can_tx_zje,
+			reg_bag_count,
+			status,
+			tjm
+		) VALUES (
+			#{id},
+			#{userCode},
+			#{accountName},
+			#{phone},
+			#{realName},
+			#{money},
+			#{qrCode},
+			#{createTime},
+			#{updateTime},
+			#{card},
+			#{jifen},
+			#{zje},
+			#{sex},
+			#{headImg},
+			#{redBegZje},
+			#{canTxZje},
+			#{regBagCount},
+			#{status},
+			#{tjm}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_user SET 	
+			user_code = #{userCode},
+			account_name = #{accountName},
+			phone = #{phone},
+			real_name = #{realName},
+			money = #{money},
+			qr_code = #{qrCode},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			card = #{card},
+			jifen = #{jifen},
+			zje = #{zje},
+			sex = #{sex},
+			head_img = #{headImg},
+			red_beg_zje = #{redBegZje},
+			can_tx_zje = #{canTxZje},
+			reg_bag_count = #{regBagCount},
+			status = #{status},
+			tjm = #{tjm}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_user
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.sp.dao.CCMSpDao">
+    
+	<sql id="cCMSpColumns">
+		a.id AS "id",
+		a.sp_code AS "spCode",
+		a.sp_name AS "spName",
+		a.sp_type_code AS "spTypeCode",
+		a.zhekou AS "zhekou",
+		a.ku_cun AS "kuCun",
+		a.price AS "price",
+		a.shop_code AS "shopCode",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.sp_img AS "spImg",
+		a.jifen AS "jifen",
+		a.redbag_val AS "redbagVal",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.shop_name AS "shopName",
+		a.sp_icon AS "spIcon"
+	</sql>
+	
+	<sql id="cCMSpJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMSp">
+		SELECT 
+			<include refid="cCMSpColumns"/>
+		FROM ccm_sp a
+		<include refid="cCMSpJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMSp">
+		SELECT 
+			<include refid="cCMSpColumns"/>
+		FROM ccm_sp a
+		<include refid="cCMSpJoins"/>
+		<where>
+			
+			<if test="spCode != null and spCode != ''">
+				AND a.sp_code = #{spCode}
+			</if>
+			<if test="spName != null and spName != ''">
+				AND a.sp_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{spName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{spName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{spName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMSp">
+		SELECT 
+			<include refid="cCMSpColumns"/>
+		FROM ccm_sp a
+		<include refid="cCMSpJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_sp(
+			id,
+			sp_code,
+			sp_name,
+			sp_type_code,
+			zhekou,
+			ku_cun,
+			price,
+			shop_code,
+			create_time,
+			update_time,
+			sp_img,
+			jifen,
+			redbag_val,
+			extend1,
+			extend2,
+			extend3,
+			shop_name,
+			sp_icon
+		) VALUES (
+			#{id},
+			#{spCode},
+			#{spName},
+			#{spTypeCode},
+			#{zhekou},
+			#{kuCun},
+			#{price},
+			#{shopCode},
+			#{createTime},
+			#{updateTime},
+			#{spImg},
+			#{jifen},
+			#{redbagVal},
+			#{extend1},
+			#{extend2},
+			#{extend3},
+			#{shopName},
+			#{spIcon}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_sp SET 	
+			sp_code = #{spCode},
+			sp_name = #{spName},
+			sp_type_code = #{spTypeCode},
+			zhekou = #{zhekou},
+			ku_cun = #{kuCun},
+			price = #{price},
+			shop_code = #{shopCode},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			sp_img = #{spImg},
+			jifen = #{jifen},
+			redbag_val = #{redbagVal},
+			extend1 = #{extend1},
+			extend2 = #{extend2},
+			extend3 = #{extend3},
+			shop_name = #{shopName},
+			sp_icon = #{spIcon}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_sp
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

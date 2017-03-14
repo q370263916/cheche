@@ -1,0 +1,13 @@
+package com.chechemotel.util;
+
+import org.apache.log4j.Logger;
+
+/**
+ * Created by fangyibai on 2016/10/21.
+ */
+public class CCMLog extends Logger {
+
+    protected CCMLog(String name) {
+        super(name);
+    }
+}

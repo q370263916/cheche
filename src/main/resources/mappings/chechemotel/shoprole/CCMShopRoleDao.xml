@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.shoprole.dao.CCMShopRoleDao">
+    
+	<sql id="cCMShopRoleColumns">
+		a.id AS "id",
+		a.shop_code AS "shopCode",
+		a.shop_name AS "shopName",
+		a.username AS "username",
+		a.password AS "password",
+		a.realname AS "realname",
+		a.tel AS "tel",
+		a.flag AS "flag",
+		a.type AS "type",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.shop_type AS "shopType"
+	</sql>
+	
+	<sql id="cCMShopRoleJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMShopRole">
+		SELECT 
+			<include refid="cCMShopRoleColumns"/>
+		FROM ccm_shop_role a
+		<include refid="cCMShopRoleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMShopRole">
+		SELECT 
+			<include refid="cCMShopRoleColumns"/>
+		FROM ccm_shop_role a
+		<include refid="cCMShopRoleJoins"/>
+		<where>
+			<if test="shopName != null and shopName != ''">
+				AND a.shop_name = #{shopName}
+			</if>
+			<if test="shopCode != null and shopCode != ''">
+				AND a.shop_code = #{shopCode}
+			</if>
+			<if test="tel != null and tel != ''">
+				AND a.tel = #{tel}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMShopRole">
+		SELECT 
+			<include refid="cCMShopRoleColumns"/>
+		FROM ccm_shop_role a
+		<include refid="cCMShopRoleJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_shop_role(
+			id,
+			shop_code,
+			shop_name,
+			username,
+			password,
+			realname,
+			tel,
+			flag,
+			type,
+			create_time,
+			update_time,
+			shop_type
+		) VALUES (
+			#{id},
+			#{shopCode},
+			#{shopName},
+			#{username},
+			#{password},
+			#{realname},
+			#{tel},
+			#{flag},
+			#{type},
+			#{createTime},
+			#{updateTime},
+			#{shopType}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_shop_role SET 	
+			shop_code = #{shopCode},
+			shop_name = #{shopName},
+			username = #{username},
+			password = #{password},
+			realname = #{realname},
+			tel = #{tel},
+			flag = #{flag},
+			type = #{type},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			shop_type = #{shopType}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_shop_role
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

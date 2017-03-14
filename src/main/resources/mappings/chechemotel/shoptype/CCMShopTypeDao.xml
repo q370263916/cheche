@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.shoptype.dao.CCMShopTypeDao">
+    
+	<sql id="cCMShopTypeColumns">
+		a.id AS "id",
+		a.type_code AS "typeCode",
+		a.type_name AS "typeName",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.sp_img AS "spImg",
+		a.sp_icon AS "spIcon"
+	</sql>
+	
+	<sql id="cCMShopTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMShopType">
+		SELECT 
+			<include refid="cCMShopTypeColumns"/>
+		FROM ccm_shop_type a
+		<include refid="cCMShopTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMShopType">
+		SELECT 
+			<include refid="cCMShopTypeColumns"/>
+		FROM ccm_shop_type a
+		<include refid="cCMShopTypeJoins"/>
+		<where>
+			
+			<if test="typeName != null and typeName != ''">
+				AND a.type_name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{typeName}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{typeName}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{typeName},'%')</if>
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMShopType">
+		SELECT 
+			<include refid="cCMShopTypeColumns"/>
+		FROM ccm_shop_type a
+		<include refid="cCMShopTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_shop_type(
+			id,
+			type_code,
+			type_name,
+			create_time,
+			update_time,
+			sp_img,
+			sp_icon
+		) VALUES (
+			#{id},
+			#{typeCode},
+			#{typeName},
+			#{createTime},
+			#{updateTime},
+			#{spImg},
+			#{spIcon}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_shop_type SET 	
+			type_code = #{typeCode},
+			type_name = #{typeName},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			sp_img = #{spImg},
+			sp_icon = #{spIcon}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_shop_type
+		WHERE id = #{id}
+	</update>
+
+	<select id="getShopTypeByCode" resultType="Integer">
+		SELECT COUNT(id) FROM ccm_shop_type WHERE type_code=#{code}
+	</select>
+
+	<select id="getShopTypeByCheckbox" resultType="CCMShopType">
+		SELECT type_code,type_name FROM ccm_shop_type
+	</select>
+	
+</mapper>

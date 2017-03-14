@@ -1,0 +1,87 @@
+package com.chechemotel.back.sms.web;
+
+import com.chechemotel.back.sms.service.SMSService;
+import com.chechemotel.util.SmsSend;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
+import java.io.UnsupportedEncodingException;
+import java.util.Random;
+
+/**
+ * 发送验证码
+ * @author 方乙百
+ * @version 2016-10-24
+ */
+@Controller
+public class SMSController {
+
+    private static Logger logger = Logger.getLogger(SMSController.class);
+
+    @Autowired
+    private SMSService smsService;
+
+    /**
+     * 发送验证码
+     * @param loginName
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "${adminPath}/sendMsg")
+    public String sendMsg(String loginName,HttpSession session){
+        String phone = smsService.getSysUserPhoneByName(loginName);
+        String code = this.getCode();
+        String content = "验证码为："+code+"（请勿将验证码告知他人）5分钟失效。【车倍爽】";
+        String message = "ok";
+        session.setAttribute("randCode","123456");
+        //session.setAttribute("randCode",code);
+        /*try {
+            SmsSend.sendMsg(phone,content);
+        } catch (UnsupportedEncodingException e) {
+            message = "error";
+            logger.error("发送验证码异常");
+            e.printStackTrace();
+        }*/
+        return message;
+    }
+
+    /**
+     * 获取session验证码 判断输入验证码是否确定
+     * @param code
+     * @param session
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "${adminPath}/getSessionCode")
+    public String getSessionCode(String code,HttpSession session){
+        String message = "ok";
+        if (code==null){
+            message = "error";
+            return message;
+        }
+        String randCode=(String) session.getAttribute("randCode");
+        if (randCode==null){
+            message = "error";
+            return message;
+        }
+        if (!code.equals(randCode)){
+            message = "error";
+            return message;
+        }
+        return message;
+    }
+
+    /**
+     * @Description: 生成6位验证码
+     * @return String    返回类型
+     */
+    private String getCode(){
+        Random random = new Random(System. currentTimeMillis());
+        return String.valueOf(Math.abs(random.nextLong())).substring(0,6) ;
+    }
+}

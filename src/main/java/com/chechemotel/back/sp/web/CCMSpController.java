@@ -1,0 +1,129 @@
+/**
+ * Copyright &copy; 2012-2016 <a href="https://github.com/thinkgem/jeesite">JeeSite</a> All rights reserved.
+ */
+package com.chechemotel.back.sp.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import com.chechemotel.back.shopinfo.entity.CCMShopInfo;
+import com.chechemotel.back.shopinfo.service.CCMShopInfoService;
+import com.chechemotel.back.sptype.entity.CCMSpType;
+import com.chechemotel.back.sptype.service.CCMSpTypeService;
+import com.chechemotel.util.StringUtil;
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
+import com.thinkgem.jeesite.common.utils.Collections3;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.chechemotel.back.sp.entity.CCMSp;
+import com.chechemotel.back.sp.service.CCMSpService;
+
+import java.util.Date;
+import java.util.List;
+
+/**
+ * 商品管理Controller
+ * @author 方乙百
+ * @version 2016-10-20
+ */
+@Controller
+@RequestMapping(value = "${adminPath}/sp/cCMSp")
+public class CCMSpController extends BaseController {
+
+	@Autowired
+	private CCMSpService cCMSpService;
+
+	@Autowired
+	private CCMShopInfoService ccmShopInfoService;
+
+    @Autowired
+    private CCMSpTypeService ccmSpTypeService;
+
+	@ModelAttribute
+	public CCMSp get(@RequestParam(required=false) String id) {
+		CCMSp entity = null;
+		if (StringUtils.isNotBlank(id)){
+			entity = cCMSpService.get(id);
+		}
+		if (entity == null){
+			entity = new CCMSp();
+		}
+		return entity;
+	}
+	
+	@RequiresPermissions("sp:cCMSp:view")
+	@RequestMapping(value = {"list", ""})
+	public String list(CCMSp cCMSp, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<CCMSp> page = cCMSpService.findPage(new Page<CCMSp>(request, response), cCMSp); 
+		model.addAttribute("page", page);
+		return "chechemotel/back/sp/cCMSpList";
+	}
+
+	@RequiresPermissions("sp:cCMSp:view")
+	@RequestMapping(value = "form")
+	public String form(CCMSp cCMSp, Model model) {
+		List<CCMShopInfo> list = ccmShopInfoService.findList(new CCMShopInfo());
+		String shopCode = cCMSp.getShopCode();
+		List<CCMSpType> spTypeByCodeList = getSpTypeByCodeList(shopCode);
+		if (CollectionUtils.isNotEmpty(spTypeByCodeList)){
+			model.addAttribute("spTypeByCodeList", spTypeByCodeList);
+		}
+		model.addAttribute("cCMSp", cCMSp);
+		model.addAttribute("shopInfoSelect", list);
+		return "chechemotel/back/sp/cCMSpForm";
+	}
+
+	@RequiresPermissions("sp:cCMSp:edit")
+	@RequestMapping(value = "save")
+	public String save(CCMSp cCMSp, Model model, RedirectAttributes redirectAttributes) {
+		if (StringUtils.isNotBlank(cCMSp.getId())){
+			cCMSp.setUpdateTime(new Date());
+		}else{
+			cCMSp.setCreateTime(new Date());
+		}
+        String spCode = cCMSp.getShopCode()+StringUtil.generateShortUuid();
+        cCMSp.setSpCode(spCode);
+		if (!beanValidator(model, cCMSp)){
+			return form(cCMSp, model);
+		}
+		cCMSpService.save(cCMSp);
+		addMessage(redirectAttributes, "保存商品管理成功");
+		return "redirect:"+Global.getAdminPath()+"/sp/cCMSp/?repage";
+	}
+	
+	@RequiresPermissions("sp:cCMSp:edit")
+	@RequestMapping(value = "delete")
+	public String delete(CCMSp cCMSp, RedirectAttributes redirectAttributes) {
+		cCMSpService.delete(cCMSp);
+		addMessage(redirectAttributes, "删除商品管理成功");
+		return "redirect:"+Global.getAdminPath()+"/sp/cCMSp/?repage";
+	}
+
+	@ResponseBody
+    @RequestMapping(value = "getSpTypeByCode")
+	public String getSpTypeByCode(String shopCode){
+        List<CCMSpType> spTypeByCode = ccmSpTypeService.getSpTypeByCode(shopCode);
+        return JsonMapper.toJsonString(spTypeByCode);
+
+    }
+
+	private List<CCMSpType> getSpTypeByCodeList(String shopCode){
+		List<CCMSpType> spTypeByCode = ccmSpTypeService.getSpTypeByCode(shopCode);
+		return spTypeByCode;
+
+	}
+
+}

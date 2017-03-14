@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.order.dao.CCMOrderDao">
+    
+	<sql id="cCMOrderColumns">
+		a.id AS "id",
+		a.order_code AS "orderCode",
+		a.order_time AS "orderTime",
+		a.sp_type_code AS "spTypeCode",
+		a.sp_code AS "spCode",
+		a.sp_name AS "spName",
+		a.dd_zj AS "ddZj",
+		a.status AS "status",
+		a.update_time AS "updateTime",
+		a.shop_code AS "shopCode",
+		a.renew_time AS "renewTime",
+		a.extend1 AS "extend1",
+		a.extend2 AS "extend2",
+		a.extend3 AS "extend3",
+		a.current_time_stamp AS "currentTimeStamp",
+		a.user_code AS "userCode",
+		a.account_name AS "accountName"
+	</sql>
+	
+	<sql id="cCMOrderJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMOrder">
+		SELECT 
+			<include refid="cCMOrderColumns"/>
+		FROM ccm_order a
+		<include refid="cCMOrderJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMOrder">
+		SELECT 
+			<include refid="cCMOrderColumns"/>
+		FROM ccm_order a
+		<include refid="cCMOrderJoins"/>
+		<where>
+			
+			<if test="orderCode != null and orderCode != ''">
+				AND a.order_code = #{orderCode}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMOrder">
+		SELECT 
+			<include refid="cCMOrderColumns"/>
+		FROM ccm_order a
+		<include refid="cCMOrderJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>

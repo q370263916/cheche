@@ -1,0 +1,61 @@
+package com.chechemotel.util;
+
+import java.sql.SQLException;
+
+import com.mysql.jdbc.PreparedStatement;
+
+import com.mysql.jdbc.Connection;
+
+import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+
+
+
+  public class JDBCUtil {
+	  
+	  public static boolean ChaRu(String sql,List<Object[]> list){
+		  int batchSize = 1000;
+	        boolean flag=false;
+	        Connection conn=null;
+	        PreparedStatement ps=null;    //创建PreparedStatement 对象
+	        conn=DBConnUtil.getConn();
+	        try {
+	            ps=(PreparedStatement) conn.prepareStatement(sql);
+	            for (int i = 0; i < list.size(); i++) {
+	               Object[] obj =list.get(i);
+	    		   ps.setObject(1, obj[0]);
+	    		   ps.setObject(2, obj[1]);
+	    		   ps.setObject(3, obj[2]);
+	    		   ps.setObject(4, obj[3]);
+	    		   ps.setObject(5, obj[4]);
+	    		   ps.setObject(6, obj[5]);
+	    		   ps.setObject(7, obj[6]);
+	    		   ps.setObject(8, obj[7]);
+	    		   ps.setObject(9, obj[8]);
+	    		   ps.setObject(10, obj[9]);
+	    		  ps.setObject(11, obj[10]);
+	    		  ps.setObject(12, obj[11]);
+
+	    		    ps.addBatch();
+
+	    		    if ((i + 1) % batchSize == 0) {
+	    		        ps.executeBatch();
+	    		        flag=true;
+	    		    }
+	    		}
+
+	    		if (list.size() % batchSize != 0) {
+	    		    ps.executeBatch();
+	    		    flag=true;
+	    		}
+	        } catch (SQLException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }finally{
+	            DBConnUtil.closeAll(null, ps, conn);
+	        }
+	        return flag;
+	        
+	    }
+}

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.shopinfo.dao.CCMShopInfoDao">
+    
+	<sql id="cCMShopInfoColumns">
+		a.id AS "id",
+		a.shop_code AS "shopCode",
+		a.shop_name AS "shopName",
+		a.shop_address AS "shopAddress",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.bussiness_licence AS "bussinessLicence",
+		a.tax_registration_certificate AS "taxRegistrationCertificate",
+		a.name AS "name",
+		a.tel AS "tel",
+		a.content AS "content",
+		a.shop_type AS "shopType",
+		a.money AS "money",
+		a.bussiness_licence_pic AS "bussinessLicencePic"
+	</sql>
+	
+	<sql id="cCMShopInfoJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMShopInfo">
+		SELECT 
+			<include refid="cCMShopInfoColumns"/>
+		FROM ccm_shop_info a
+		<include refid="cCMShopInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMShopInfo">
+		SELECT 
+			<include refid="cCMShopInfoColumns"/>
+		FROM ccm_shop_info a
+		<include refid="cCMShopInfoJoins"/>
+		<where>
+			
+			<if test="shopName != null and shopName != ''">
+				AND a.shop_name = #{shopName}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE 
+					<if test="dbName == 'oracle'">'%'||#{name}||'%'</if>
+					<if test="dbName == 'mssql'">'%'+#{name}+'%'</if>
+					<if test="dbName == 'mysql'">concat('%',#{name},'%')</if>
+			</if>
+			<if test="tel != null and tel != ''">
+				AND a.tel = #{tel}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMShopInfo">
+		SELECT 
+			<include refid="cCMShopInfoColumns"/>
+		FROM ccm_shop_info a
+		<include refid="cCMShopInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_shop_info(
+			id,
+			shop_code,
+			shop_name,
+			shop_address,
+			create_time,
+			update_time,
+			bussiness_licence,
+			tax_registration_certificate,
+			name,
+			tel,
+			content,
+			shop_type,
+			money,
+			bussiness_licence_pic
+		) VALUES (
+			#{id},
+			#{shopCode},
+			#{shopName},
+			#{shopAddress},
+			#{createTime},
+			#{updateTime},
+			#{bussinessLicence},
+			#{taxRegistrationCertificate},
+			#{name},
+			#{tel},
+			#{content},
+			#{shopType},
+			#{money},
+			#{bussinessLicencePic}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_shop_info SET 	
+			shop_code = #{shopCode},
+			shop_name = #{shopName},
+			shop_address = #{shopAddress},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			bussiness_licence = #{bussinessLicence},
+			tax_registration_certificate = #{taxRegistrationCertificate},
+			name = #{name},
+			tel = #{tel},
+			content = #{content},
+			shop_type = #{shopType},
+			money = #{money},
+			bussiness_licence_pic = #{bussinessLicencePic}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_shop_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

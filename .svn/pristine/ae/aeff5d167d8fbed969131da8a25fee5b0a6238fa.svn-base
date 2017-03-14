@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.recharge.dao.CCMUserRechargeDao">
+    
+	<sql id="cCMUserRechargeColumns">
+		a.id AS "id",
+		a.user_code AS "userCode",
+		a.in_money_time AS "inMoneyTime",
+		a.in_money AS "inMoney",
+		a.in_money_type AS "inMoneyType",
+		a.in_bank_ordernum AS "inBankOrdernum",
+		a.update_time AS "updateTime"
+	</sql>
+	
+	<sql id="cCMUserRechargeJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMUserRecharge">
+		SELECT 
+			<include refid="cCMUserRechargeColumns"/>
+		FROM ccm_user_recharge a
+		<include refid="cCMUserRechargeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMUserRecharge">
+		SELECT 
+			<include refid="cCMUserRechargeColumns"/>
+		FROM ccm_user_recharge a
+		<include refid="cCMUserRechargeJoins"/>
+		<where>
+			
+			<if test="userCode != null and userCode != ''">
+				AND a.user_code = #{userCode}
+			</if>
+			<if test="inBankOrdernum != null and inBankOrdernum != ''">
+				AND a.in_bank_ordernum = #{inBankOrdernum}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMUserRecharge">
+		SELECT 
+			<include refid="cCMUserRechargeColumns"/>
+		FROM ccm_user_recharge a
+		<include refid="cCMUserRechargeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	
+</mapper>

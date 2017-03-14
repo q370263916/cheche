@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.sptype.dao.CCMSpTypeDao">
+    
+	<sql id="cCMSpTypeColumns">
+		a.id AS "id",
+		a.sp_type_name AS "spTypeName",
+		a.sp_type_code AS "spTypeCode",
+		a.sp_type_level AS "spTypeLevel",
+		a.sp_type_parent AS "spTypeParent",
+		a.create_time AS "createTime",
+		a.update_time AS "updateTime",
+		a.mark AS "mark",
+		a.shop_code AS "shopCode",
+		a.shop_name AS "shopName",
+		a.sp_img AS "spImg",
+		a.sp_icon AS "spIcon"
+	</sql>
+	
+	<sql id="cCMSpTypeJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMSpType">
+		SELECT 
+			<include refid="cCMSpTypeColumns"/>
+		FROM ccm_sp_type a
+		<include refid="cCMSpTypeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMSpType">
+		SELECT 
+			<include refid="cCMSpTypeColumns"/>
+		FROM ccm_sp_type a
+		<include refid="cCMSpTypeJoins"/>
+		<where>
+			
+			<if test="spTypeName != null and spTypeName != ''">
+				AND a.sp_type_name = #{spTypeName}
+			</if>
+			<if test="spTypeCode != null and spTypeCode != ''">
+				AND a.sp_type_code = #{spTypeCode}
+			</if>
+			<if test="spTypeLevel != null and spTypeLevel != ''">
+				AND a.sp_type_level = #{spTypeLevel}
+			</if>
+			<if test="spTypeParent != null and spTypeParent != ''">
+				AND a.sp_type_parent = #{spTypeParent}
+			</if>
+			<if test="shopName != null and shopName != ''">
+				AND a.shop_name = #{shopName}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMSpType">
+		SELECT 
+			<include refid="cCMSpTypeColumns"/>
+		FROM ccm_sp_type a
+		<include refid="cCMSpTypeJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO ccm_sp_type(
+			id,
+			sp_type_name,
+			sp_type_code,
+			sp_type_level,
+			sp_type_parent,
+			create_time,
+			update_time,
+			mark,
+			shop_code,
+			shop_name,
+			sp_img,
+			sp_icon
+		) VALUES (
+			#{id},
+			#{spTypeName},
+			#{spTypeCode},
+			#{spTypeLevel},
+			#{spTypeParent},
+			#{createTime},
+			#{updateTime},
+			#{mark},
+			#{shopCode},
+			#{shopName},
+			#{spImg},
+			#{spIcon}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE ccm_sp_type SET 	
+			sp_type_name = #{spTypeName},
+			sp_type_code = #{spTypeCode},
+			sp_type_level = #{spTypeLevel},
+			sp_type_parent = #{spTypeParent},
+			create_time = #{createTime},
+			update_time = #{updateTime},
+			mark = #{mark},
+			shop_code = #{shopCode},
+			shop_name = #{shopName},
+			sp_img = #{spImg},
+			sp_icon = #{spIcon}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM ccm_sp_type
+		WHERE id = #{id}
+	</update>
+	
+	
+	<select id="findLevelOne" resultType="CCMSpType">
+		SELECT 
+			<include refid="cCMSpTypeColumns"/>
+		FROM ccm_sp_type a
+		<include refid="cCMSpTypeJoins"/>
+			 WHERE a.sp_type_level='1'	
+			ORDER BY id
+	</select>
+	
+	<select id="findLevelTwo" resultType="CCMSpType">
+		SELECT 
+			<include refid="cCMSpTypeColumns"/>
+		FROM ccm_sp_type a
+		<include refid="cCMSpTypeJoins"/>
+			 WHERE a.sp_type_level='2'	
+			ORDER BY id
+	</select>
+
+	<select id="getSpTypeByCode" resultType="CCMSpType">
+		SELECT sp_type_name,sp_type_code FROM ccm_sp_type WHERE shop_code=#{shopCode}
+	</select>
+</mapper>

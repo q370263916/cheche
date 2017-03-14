@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.chechemotel.back.orderstream.dao.CCMOrderStreamDao">
+    
+	<sql id="cCMOrderStreamColumns">
+		a.id AS "id",
+		a.order_code AS "orderCode",
+		a.order_time AS "orderTime",
+		a.sp_type_code AS "spTypeCode",
+		a.sp_code AS "spCode",
+		a.so_name AS "soName",
+		a.dd_zj AS "ddZj",
+		a.status AS "status",
+		a.update_time AS "updateTime",
+		a.shop_code AS "shopCode",
+		a.current_time_stamp AS "currentTimeStamp",
+		a.user_code AS "userCode",
+		a.account_name AS "accountName"
+	</sql>
+	
+	<sql id="cCMOrderStreamJoins">
+	</sql>
+    
+	<select id="get" resultType="CCMOrderStream">
+		SELECT 
+			<include refid="cCMOrderStreamColumns"/>
+		FROM ccm_order_stream a
+		<include refid="cCMOrderStreamJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="CCMOrderStream">
+		SELECT 
+			<include refid="cCMOrderStreamColumns"/>
+		FROM ccm_order_stream a
+		<include refid="cCMOrderStreamJoins"/>
+		<where>
+			
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="CCMOrderStream">
+		SELECT 
+			<include refid="cCMOrderStreamColumns"/>
+		FROM ccm_order_stream a
+		<include refid="cCMOrderStreamJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+</mapper>
